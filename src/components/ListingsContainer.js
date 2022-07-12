@@ -1,11 +1,33 @@
-import React from "react";
-// import ListingCard from "./ListingCard";
+import React, { useEffect, useState } from "react";
+import ListingCard from "./ListingCard";
 
-function ListingsContainer() {
+function ListingsContainer({ search }) {
+  const [listings, setListings] = useState([])
+
+  useEffect( () => {
+    fetch('http://localhost:6001/listings')
+    .then(resp => resp.json())
+    .then(data => setListings(data))
+  }, [])
+
+  const filteredListings = listings.filter((listing) => {
+    const loweredCaseDescription = listing.description.toLowerCase(); 
+    const loweredCaseLocation = listing.location.toLowerCase(); 
+    const loweredCaseSearch = search.toLowerCase(); 
+
+    return (
+        loweredCaseDescription.includes() || loweredCaseLocation.includes(loweredCaseSearch)
+    )
+  }); 
+
+  const renderListings = filteredListings.map((listing) => (
+    <ListingCard key={listing.id} listing={listing} setListings={setListings} />
+  ))
+
   return (
     <main>
       <ul className="cards">
-        {/* use the ListingCard component to display listings */}
+       {renderListings}
       </ul>
     </main>
   );
